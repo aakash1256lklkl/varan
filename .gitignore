@@ -1,0 +1,25 @@
+# Secrets & local config
+.env
+state.json
+profile.json
+
+# Generated files
+outputs/
+cmp3_out.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+
+# Editor / OS
+.idea/
+.vscode/
+*.swp
+Thumbs.db
+Desktop.ini
+__ign_test.txt
