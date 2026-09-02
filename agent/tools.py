@@ -136,7 +136,7 @@ TOOLS = [
         "type": "function",
         "function": {
             "name": "read_file",
-            "description": "Read the contents of a Word, Excel, PowerPoint, PDF, or plain-text (.txt/.md) file.",
+            "description": "Read the contents of a Word, Excel, PowerPoint, PDF, or plain-text (.txt/.md) file. When the optional 'anydoc' package is installed, the result also includes a 'markdown' field with the file converted to clean GitHub-Flavored Markdown (headings/tables/lists preserved) — prefer it for understanding document structure.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -150,7 +150,7 @@ TOOLS = [
         "type": "function",
         "function": {
             "name": "summarize_file",
-            "description": "Summarize a Word, Excel, PowerPoint, PDF, or plain-text (.txt/.md) file (structure + preview).",
+            "description": "Summarize a Word, Excel, PowerPoint, PDF, or plain-text (.txt/.md) file (structure + preview). When the optional 'anydoc' package is installed, the result also includes a 'markdown_preview' field with the file's real structure as Markdown.",
             "parameters": {
                 "type": "object",
                 "properties": {

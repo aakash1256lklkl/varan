@@ -9,6 +9,7 @@ from .word_editor import WordEditor
 from .excel_editor import ExcelEditor
 from .ppt_editor import PowerPointEditor
 from .text_editor import TextEditor
+from . import anydoc_reader
 
 
 class Registry:
@@ -67,17 +68,34 @@ class Registry:
     def read(self, path: str | Path):
         editor = self.editor_for(path)
         if isinstance(editor, WordEditor):
-            return editor.read_document(path)
-        if isinstance(editor, ExcelEditor):
-            return editor.read_workbook(path)
-        if isinstance(editor, TextEditor):
-            return editor.read(path)
-        return editor.read_presentation(path)
+            result = editor.read_document(path)
+        elif isinstance(editor, ExcelEditor):
+            result = editor.read_workbook(path)
+        elif isinstance(editor, TextEditor):
+            result = editor.read(path)
+        else:
+            result = editor.read_presentation(path)
+        # Optional anydoc enhancement: attach clean GitHub-Flavored Markdown
+        # (headings/tables/lists preserved) when the package is installed and
+        # the conversion succeeds. The structured result is unchanged, so
+        # callers/tests keep working; the model gets LLM-ready context.
+        md = anydoc_reader.to_markdown(path)
+        if md is not None:
+            result["markdown"] = md
+        return result
 
     def summarize(self, path: str | Path, **kwargs):
         editor = self.editor_for(path)
         if isinstance(editor, WordEditor):
-            return editor.summarize(path, **kwargs)
-        if isinstance(editor, TextEditor):
-            return editor.summarize(path, **kwargs)
-        return editor.summarize(path)
+            result = editor.summarize(path, **kwargs)
+        elif isinstance(editor, TextEditor):
+            result = editor.summarize(path, **kwargs)
+        else:
+            result = editor.summarize(path)
+        # Optional anydoc enhancement: attach a short Markdown preview so the
+        # model can see the document's real structure (headings, tables, lists)
+        # even for formats Varan's own readers only skim.
+        md = anydoc_reader.to_markdown(path)
+        if md is not None:
+            result["markdown_preview"] = md[:1500]
+        return result

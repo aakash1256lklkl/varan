@@ -8,3 +8,4 @@ pynput>=1.7.6
 docxengine>=1.0.0
 pywin32>=306
 pypdf>=5.0.0
+firecrawl-anydoc>=0.2.0   # optional: converts Office/PDF files to clean Markdown for read_file/summarize_file

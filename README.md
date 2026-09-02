@@ -8,7 +8,7 @@ Create, edit, read and summarize Microsoft Office files — from natural languag
 ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?logo=windows&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-blue)
-![Status](https://img.shields.io/badge/build-40%2F40%20passing-brightgreen)
+![Status](https://img.shields.io/badge/build-41%2F41%20passing-brightgreen)
 
 ---
 
@@ -196,6 +196,12 @@ Three editing modes, chosen automatically:
 
 ### Reading & summarizing
 - `read_file` and `summarize_file` work across all five formats.
+- **Clean Markdown via anydoc (optional)**: when `firecrawl-anydoc` is installed,
+  `read_file` also returns a `markdown` field — the file converted to GitHub-Flavored
+  Markdown with headings, tables and lists preserved (Word, PowerPoint, Excel, PDF,
+  OpenDocument, RTF, EPUB, CSV, and legacy `.doc`/`.ppt`/`.xls`). `summarize_file`
+  gains a `markdown_preview` of the real structure. Without the package, Varan
+  gracefully falls back to its built-in extractors.
 
 ---
 
@@ -245,6 +251,7 @@ varan/
 │   ├── excel_editor.py   # openpyxl
 │   ├── ppt_editor.py     # python-pptx
 │   ├── text_editor.py    # pypdf + plain-text editing
+│   ├── anydoc_reader.py  # optional: Office/PDF → clean Markdown (firecrawl-anydoc)
 │   ├── word_live.py      # Word COM live editor
 │   ├── excel_live.py     # Excel COM live editor
 │   └── ppt_live.py       # PowerPoint COM live editor
@@ -263,7 +270,7 @@ python tests\smoke_test.py          # each editor creates + reads a valid file
 python tests\editing_stress.py      # the full edit contract, via ToolExecutor
 ```
 
-`editing_stress.py` is the checklist of edits Varan must be able to perform — **40 specs**:
+`editing_stress.py` is the checklist of edits Varan must be able to perform — **41 specs**:
 
 - **Word (18)** — styled create, exact-phrase & replace-all (`count: -1`), insert before/
   after, append without markdown leaks, destructive-delete confirmation gate,
@@ -276,7 +283,8 @@ python tests\editing_stress.py      # the full edit contract, via ToolExecutor
   rebuild remap.
 - **PDF (2)** — read/summarize, best-effort replace.
 - **Text (7)** — replace first/Nth/all, insert, append, delete, `delete_range`.
-- **Cross-cutting (1)** — create-on-open-target remap + `[VERIFICATION]` on-disk re-read.
+- **Cross-cutting (2)** — create-on-open-target remap + `[VERIFICATION]` on-disk re-read,
+  anydoc Markdown on `read_file` (auto-skipped when the optional package is absent).
 
 One guarantee the suite enforces: **a missing match is never a silent success.**
 

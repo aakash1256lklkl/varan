@@ -768,11 +768,31 @@ def c1():
     assert args["content"][0]["type"] == "title", args
 
 
+@spec("R1 read_file returns clean anydoc Markdown when the optional package is installed")
+def r1():
+    from office import anydoc_reader
+    p = WORK / "r1.docx"
+    call("create_document", {"path": str(p), "body": [
+        {"type": "heading", "level": 1, "text": "AnyDoc Heading"},
+        {"type": "paragraph", "text": "Body line for markdown."},
+        {"type": "table", "headers": ["Col A", "Col B"], "rows": [["1", "2"]]},
+    ]})
+    r = call("read_file", {"path": str(p)})
+    assert r.get("ok") and "AnyDoc Heading" in str(r.get("data")), r
+    if anydoc_reader.available():
+        md = r["data"].get("markdown")
+        assert md, "anydoc installed but no markdown attached"
+        assert "AnyDoc Heading" in md and "Col A" in md, md
+    else:
+        # graceful fallback: structured read still works without anydoc
+        assert "paragraphs" in r["data"], r
+
+
 def main() -> int:
     print("Varan editing stress suite — exercising the real ToolExecutor surface\n")
     _ = (w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15, w16,
          w17, w18, x1, x2, x3, x4, p1, p2, p3, p4, p5, p6, p7, p8, d1, d2,
-         t1, t2, t3, t4, t5, t6, t7, c1)
+         t1, t2, t3, t4, t5, t6, t7, c1, r1)
     for fn in _:
         fn()
     print(f"\n{COUNT['pass']} passed, {COUNT['fail']} failed")
